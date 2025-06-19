@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StaticPages;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', [StaticPages::class, 'welcome'])->name('home');
+Route::get('/contact', [StaticPages::class, 'contact'])->name('contact');
+Route::get('/privacy', [StaticPages::class, 'privacy'])->name('privacy');
+Route::get('/about', [StaticPages::class, 'about'])->name('about');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -17,4 +19,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
