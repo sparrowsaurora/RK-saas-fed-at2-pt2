@@ -19,30 +19,63 @@ class UserSeeder extends Seeder
                 'email' => 'admin@example.com',
                 'password' => 'Password1',
                 'email_verified_at' => now(),
+                'role' => 'Administrator',
             ],
-
             [
                 'id' => 200,
                 'name' => 'Staff User',
                 'email' => 'staff@example.com',
                 'password' => 'Password1',
-                'email_verified_at' => null,
+                'email_verified_at' => now(),
+                'role' => 'Staff',
             ],
-
             [
                 'id' => 201,
                 'name' => 'Client User',
                 'email' => 'client@example.com',
                 'password' => 'Password1',
-                'email_verified_at' => null,
+                'email_verified_at' => now(),
+                'role' => 'Client',
+            ],
+            [
+                'id' => 202,
+                'name' => 'John Doe',
+                'email' => 'john@example.com',
+                'password' => 'Password1',
+                'email_verified_at' => now(),
+                'role' => 'Client',
+            ],
+            [
+                'id' => 203,
+                'name' => 'Jane Doe',
+                'email' => 'jane@example.com',
+                'password' => 'Password1',
+                'email_verified_at' => now(),
+                'role' => 'Client',
+            ],
+            [
+                'id' => 204,
+                'name' => 'Test User',
+                'email' => 'test@example.com',
+                'password' => 'Password1',
+                'email_verified_at' => now(),
+                'role' => 'Client',
             ],
         ];
 
-        foreach ($seedUsers as $user) {
+        foreach ($seedUsers as $userData) {
+            $role = $userData['role']; // Save and remove role from data
+            unset($userData['role']);
+
             $user = User::updateOrCreate(
-                ['id' => $user['id']],
-                $user
+                ['id' => $userData['id']],
+                array_merge($userData, [
+                    'password' => bcrypt($userData['password']),
+                ])
             );
+
+            // Assign role using Spatie
+            $user->assignRole($role);
         }
 
     }

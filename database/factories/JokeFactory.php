@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
+use App\Models\Joke;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Joke>
@@ -11,14 +12,13 @@ use App\Models\User;
 
 class JokeFactory extends Factory
 {
-    protected $model = \App\Models\Joke::class;
+    protected $model = Joke::class;
 
     public function definition()
     {
         return [
             'title' => $this->faker->sentence,
             'content' => $this->faker->paragraph,
-            'user_id' => User::factory(),
         ];
     }
 }
