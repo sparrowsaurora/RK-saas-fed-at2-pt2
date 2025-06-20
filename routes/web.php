@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\JokeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StaticPages;
 use App\Http\Controllers\UserController;
@@ -19,12 +20,21 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Trash routes
+    // Trash routes - users
     Route::get('users/trash', [UserController::class, 'trash'])->name('users.trash');
     Route::patch('users/trash/{id}/recover', [UserController::class, 'recoverOne'])->name('users.recover-one');
     Route::delete('users/trash/empty', [UserController::class, 'emptyAll'])->name('users.empty-all');
     Route::delete('users/trash/{id}/delete', [UserController::class, 'emptyOne'])->name('users.empty-one');
     Route::patch('users/trash/recover-all', [UserController::class, 'recoverAll'])->name('users.recover-all');
+
+    Route::resource('jokes', JokeController::class);
+
+    // Trash routes - jokes
+    Route::get('jokes-trash', [JokeController::class, 'trash'])->name('jokes.trash');
+    Route::post('jokes-trash/{id}/restore', [JokeController::class, 'restore'])->name('jokes.restore');
+    Route::post('jokes-trash/restore-all', [JokeController::class, 'restoreAll'])->name('jokes.restoreAll');
+    Route::delete('jokes-trash/{id}/force-delete', [JokeController::class, 'forceDelete'])->name('jokes.forceDelete');
+    Route::delete('jokes-trash/force-delete-all', [JokeController::class, 'forceDeleteAll'])->name('jokes.forceDeleteAll');
 
     Route::resource('users', UserController::class);
     Route::get('users/{user}/delete', [UserController::class, 'delete'])->name('user.delete');

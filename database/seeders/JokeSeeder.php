@@ -12,6 +12,8 @@ class JokeSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $this->call([
+            JokeSeeder::class,
+        ]);
     }
 }

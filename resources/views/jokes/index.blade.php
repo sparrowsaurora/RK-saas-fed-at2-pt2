@@ -1,0 +1,39 @@
+<x-app-layout>
+    <x-slot name="header">
+        {{ __('All Jokes') }}
+    </x-slot>
+
+    <div class="py-6 max-w-5xl mx-auto">
+        <div class="flex justify-end mb-4">
+            <a href="{{ route('jokes.create') }}" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">New Joke</a>
+        </div>
+
+        <table class="w-full bg-white shadow rounded">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-4 py-2 text-left">Title</th>
+                    <th class="px-4 py-2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($jokes as $joke)
+                    <tr class="border-t">
+                        <td class="px-4 py-2">{{ $joke->title }}</td>
+                        <td class="px-4 py-2 text-center">
+                            <a href="{{ route('jokes.show', $joke) }}" class="text-blue-600 hover:underline">Show</a> |
+                            <a href="{{ route('jokes.edit', $joke) }}" class="text-amber-600 hover:underline">Edit</a> |
+                            <form action="{{ route('jokes.destroy', $joke) }}" method="POST" class="inline">
+                                @csrf @method('DELETE')
+                                <button onclick="return confirm('Move to trash?')" class="text-red-600 hover:underline">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+        <div class="mt-4">
+            {{ $jokes->links() }}
+        </div>
+    </div>
+</x-app-layout>
