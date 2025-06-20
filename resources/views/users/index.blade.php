@@ -60,15 +60,9 @@
                                 </span>
                             </p>
 
-                            <form method="POST"
-                                  action="{{ route('users.destroy', $user) }}"
-                                  class="col-span-2 flex border border-gray-300 rounded-lg px-0 overflow-hidden">
-
-                                @csrf
-                                @method('DELETE')
-
+                            <div class="col-span-2 flex border border-gray-300 rounded-lg px-0 overflow-hidden">
                                 <a href="{{ route('users.show', $user) }}"
-                                   class="bg-gray-100 hover:bg-blue-500 text-blue-800 hover:text-gray-100 text-center border-r border-r-gray-300 transition duration-300 grow px-4 py-1.5 rounded-l">
+                                   class="bg-gray-100 hover:bg-blue-500 text-blue-800 hover:text-gray-100 text-center border-r border-gray-300 transition duration-300 grow px-4 py-1.5 rounded-l">
                                     <i class="fa-solid fa-user text-sm"></i> Show
                                 </a>
 
@@ -77,12 +71,12 @@
                                     <i class="fa-solid fa-user-pen text-sm"></i> Edit
                                 </a>
 
-                                <button type="submit"
-                                        onclick="return confirm('Are you sure?')"
-                                        class="bg-gray-100 hover:bg-red-500 text-red-800 hover:text-gray-100 text-center border-l border-gray-300 transition duration-300 grow px-2 rounded-r">
+                                <a href="{{ route('user.delete', $user) }}"
+                                   class="bg-gray-100 hover:bg-red-500 text-red-800 hover:text-gray-100 text-center border-l border-gray-300 transition duration-300 grow px-4 py-1.5 rounded-r">
                                     <i class="fa-solid fa-user-minus text-sm"></i> Delete
-                                </button>
-                            </form>
+                                </a>
+                            </div>
+
                         </section>
                     @endforeach
 
