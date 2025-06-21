@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StaticPages;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\JokeReactionController;
 
 Route::get('/', [StaticPages::class, 'welcome'])->name('home');
 Route::get('/contact', [StaticPages::class, 'contact'])->name('contact');
@@ -54,6 +55,10 @@ Route::middleware(['auth'])->group(function () {
     // All: can browse, show
     Route::get('jokes', [JokeController::class, 'index'])->name('jokes.index');
     Route::get('jokes/{joke}', [JokeController::class, 'show'])->name('jokes.show');
+
+    Route::post('jokes/{joke}/react', [JokeReactionController::class, 'store'])->name('jokes.react');
+    Route::delete('jokes/{joke}/react', [JokeReactionController::class, 'destroy'])->name('jokes.unreact');
+
 
     // Staff/Admin: edit/delete jokes (any)
     Route::middleware('role:Administrator|Staff')->group(function () {

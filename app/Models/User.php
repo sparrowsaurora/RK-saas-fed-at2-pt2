@@ -54,4 +54,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'password' => 'hashed',
     ];
 
+    public function reactions() {
+        return $this->hasMany(JokeReaction::class);
+    }
+
 }

@@ -18,4 +18,17 @@ class Joke extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function reactions() {
+        return $this->hasMany(JokeReaction::class);
+    }
+
+    public function likes() {
+        return $this->hasMany(JokeReaction::class)->where('type', 'like');
+    }
+
+    public function dislikes() {
+        return $this->hasMany(JokeReaction::class)->where('type', 'dislike');
+    }
+
 }

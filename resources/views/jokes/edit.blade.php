@@ -7,7 +7,7 @@
         <div class="bg-white p-6 rounded shadow">
             <form method="POST" action="{{ route('jokes.update', $joke) }}">
                 @csrf
-                @method('PATCH')
+                @method('PUT')
 
                 <x-input-label for="title" :value="__('Title')" />
                 <x-text-input name="title" value="{{ old('title', $joke->title) }}" class="block w-full mt-1 mb-4" required />
