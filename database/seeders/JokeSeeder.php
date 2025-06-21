@@ -6,6 +6,7 @@ use App\Models\Joke;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use App\Models\Category;
 
 class JokeSeeder extends Seeder
 {
@@ -17,15 +18,16 @@ class JokeSeeder extends Seeder
         if (User::count() === 0) {
             User::factory()->count(5)->create();
         }
+        $categories = Category::all();
+        $users = User::all();
 
-        // Get random users to assign jokes to
-        $userIds = User::pluck('id')->toArray();
+        Joke::factory(20)->make()->each(function ($joke) use ($categories, $users) {
+            $joke->user_id = $users->random()->id;
+            $joke->save();
 
-        // Seed 20 jokes
-        Joke::factory()->count(20)->create([
-            'user_id' => function () use ($userIds) {
-                return $userIds[array_rand($userIds)];
-            }
-        ]);
+            $joke->categories()->attach(
+                $categories->random(rand(1, 3))->pluck('id')->toArray()
+            );
+        });
     }
 }

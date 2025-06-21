@@ -7,6 +7,18 @@
         <div class="flex justify-end mb-4">
             <a href="{{ route('jokes.create') }}" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">New Joke</a>
         </div>
+        <form method="GET" action="{{ route('jokes.index') }}" class="mb-4">
+            <label for="category">Filter by Category:</label>
+            <select name="category" id="category" onchange="this.form.submit()">
+                <option value="">-- All Categories --</option>
+                @foreach ($categories as $category)
+                    <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                        {{ $category->name }}
+                    </option>
+                @endforeach
+            </select>
+        </form>
+        <p>Total Categories: {{ $categoriesTotal }}</p>
 
         <table class="w-full bg-white shadow rounded">
             <thead class="bg-gray-100">

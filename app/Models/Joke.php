@@ -31,4 +31,8 @@ class Joke extends Model
         return $this->hasMany(JokeReaction::class)->where('type', 'dislike');
     }
 
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'category_joke');
+    }
 }

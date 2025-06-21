@@ -15,6 +15,14 @@
                 <x-input-label for="content" :value="__('Content')" />
                 <textarea name="content" class="block w-full mt-1 mb-4 border-gray-300 rounded" rows="5" required>{{ old('content', $joke->content) }}</textarea>
 
+                @foreach ($categories as $category)
+                    <label>
+                        <input type="checkbox" name="categories[]" value="{{ $category->id }}"
+                            {{ in_array($category->id, old('categories', $joke->categories->pluck('id')->toArray() ?? [])) ? 'checked' : '' }}>
+                        {{ $category->name }}
+                    </label>
+                @endforeach
+
                 <x-primary-button>{{ __('Update') }}</x-primary-button>
             </form>
         </div>

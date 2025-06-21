@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\JokeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StaticPages;
@@ -52,12 +53,7 @@ Route::middleware(['auth'])->group(function () {
     /**
      * JOKE ROUTES
      */
-    // All: can browse, show
-    Route::get('jokes', [JokeController::class, 'index'])->name('jokes.index');
-    Route::get('jokes/{joke}', [JokeController::class, 'show'])->name('jokes.show');
 
-    Route::post('jokes/{joke}/react', [JokeReactionController::class, 'store'])->name('jokes.react');
-    Route::delete('jokes/{joke}/react', [JokeReactionController::class, 'destroy'])->name('jokes.unreact');
 
 
     // Staff/Admin: edit/delete jokes (any)
@@ -65,6 +61,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('jokes/{joke}/edit', [JokeController::class, 'edit'])->name('jokes.edit');
         Route::put('jokes/{joke}', [JokeController::class, 'update'])->name('jokes.update');
         Route::delete('jokes/{joke}', [JokeController::class, 'destroy'])->name('jokes.destroy');
+        Route::resource('categories', CategoryController::class)->except(['show']);
     });
 
     // Client: create and manage own jokes
@@ -85,6 +82,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('jokes-trash/restore-all', [JokeController::class, 'restoreAll'])->name('jokes.restoreAll');
         Route::delete('jokes-trash/force-delete-all', [JokeController::class, 'forceDeleteAll'])->name('jokes.forceDeleteAll');
     });
+
+    // All: can browse, show
+    Route::get('jokes', [JokeController::class, 'index'])->name('jokes.index');
+    Route::get('jokes/{joke}', [JokeController::class, 'show'])->name('jokes.show');
+
+    Route::post('jokes/{joke}/react', [JokeReactionController::class, 'store'])->name('jokes.react');
+    Route::delete('jokes/{joke}/react', [JokeReactionController::class, 'destroy'])->name('jokes.unreact');
+    Route::get('/jokes/category/{category}', [JokeController::class, 'byCategory'])->name('jokes.byCategory');
 
     /**
      * ADMIN-ONLY ROLES & PERMISSIONS PAGE

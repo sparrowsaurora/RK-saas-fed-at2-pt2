@@ -5,6 +5,10 @@
 
     <div class="py-6 max-w-3xl mx-auto">
         <div class="bg-white p-6 rounded shadow">
+            @foreach($joke->categories as $category)
+                <span class="badge">{{ $category->name }}</span>
+            @endforeach
+
             <h2 class="text-2xl font-bold mb-4">{{ $joke->title }}</h2>
             <p class="text-gray-700">{{ $joke->content }}</p>
 

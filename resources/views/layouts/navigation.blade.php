@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     @auth
-                        <a href="{{ route('dashboard') }}">
+                        <a href="{{ route('jokes.index') }}">
                             <x-application-logo class="block h-9 w-auto fill-current text-gray-200"/>
                         </a>
                     @else
@@ -19,31 +19,35 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
-                        <i class="fa-solid fa-home mr-1"></i>
-                        {{ __('Home') }}
-                    </x-nav-link>
+{{--                    <x-nav-link :href="route('home')" :active="request()->routeIs('home')">--}}
+{{--                        <i class="fa-solid fa-home mr-1"></i>--}}
+{{--                        {{ __('Home') }}--}}
+{{--                    </x-nav-link>--}}
                     <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
                         {{ __('Users') }}
                     </x-nav-link>
 
 
                 @auth
-                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                            <i class="fa-solid fa-laptop mr-1"></i>
-                            {{ __('Dashboard') }}
+                        <x-nav-link :href="route('jokes.index')" :active="request()->routeIs('jokes.index')">
+{{--                            <i class="fa-solid fa-laptop mr-1"></i>--}}
+                            {{ __('Jokes') }}
                         </x-nav-link>
 
-                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('other.*')">
-                            <i class="fa-solid fa-link mr-1"></i>
-                            {{ __('Other Links') }} ({{ __('Authenticated') }})
-                        </x-nav-link>
+{{--                        <x-nav-link :href="route('jokes.index')" :active="request()->routeIs('other.*')">--}}
+{{--                            <i class="fa-solid fa-link mr-1"></i>--}}
+{{--                            {{ __('Other Links') }} ({{ __('Authenticated') }})--}}
+{{--                        </x-nav-link>--}}
 
                     @else
-                        <x-nav-link :href="route('home')" :active="request()->routeIs('other.*')">
-                            <i class="fa-solid fa-link mr-1"></i>
-                            {{ __('Other Links') }} ({{ __('Unauthenticated') }})
-                        </x-nav-link>
+{{--                        <x-nav-link :href="route('home')" :active="request()->routeIs('other.*')">--}}
+{{--                            <i class="fa-solid fa-link mr-1"></i>--}}
+{{--                            {{ __('Other Links') }} ({{ __('Unauthenticated') }})--}}
+{{--                        </x-nav-link>--}}
+                            <x-nav-link :href="route('jokes.index')" :active="request()->routeIs('jokes.index')">
+{{--                                <i class="fa-solid fa-laptop mr-1"></i>--}}
+                                {{ __('Jokes') }}
+                            </x-nav-link>
                     @endauth
                 </div>
             </div>
