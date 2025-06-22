@@ -65,12 +65,18 @@ class JokeController extends Controller
 
     public function edit(Joke $joke)
     {
+        if (auth()->user()->hasRole('Client') && $joke->user_id !== auth()->id()) {
+            abort(403);
+        }
         $categories = Category::all();
         return view('jokes.edit', compact('joke', 'categories'));
     }
 
     public function update(Request $request, Joke $joke)
     {
+        if (auth()->user()->hasRole('Client') && $joke->user_id !== auth()->id()) {
+            abort(403);
+        }
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
@@ -87,8 +93,10 @@ class JokeController extends Controller
 
     public function destroy(Joke $joke)
     {
+        if (auth()->user()->hasRole('Client') && $joke->user_id !== auth()->id()) {
+            abort(403);
+        }
         $joke->delete();
-
         return redirect()->route('jokes.index')->with('success', 'Joke deleted (soft) successfully!');
     }
 

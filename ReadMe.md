@@ -1,20 +1,7 @@
 # APPLICATION NAME
 <a name="readme-top"></a>
 
-(START)
-
-TO DO: Make sure the Repository is PRIVATE
-
-TO DO: Add Your lecturer as a contributor to the project repository, so
-they are able to see your code, the commit history and other details 
-within the repository.
-
-TO DO: Add a single sentence overview/summary of this project.
-
-Once complete, remove from `(START)` to `(END)`
-
-(END)
-
+A WebApp for Users to post Jokes and Share them with other Users in a social media(-like) format
 
 #### Built With
 
@@ -23,11 +10,8 @@ Once complete, remove from `(START)` to `(END)`
 [![Tailwindcss][Tailwindcss.com]][Tailwindcss-url]
 [![Livewire][Livewire.com]][Livewire-url]
 [![Inertia][Inertia.com]][Inertia-url]
-
-TO DO: Add the IDE, Development stack/Platform, and other items used in 
-developing your solution. You will need to add the link definitions at the 
-end of the file for links similar to the above to work.
-Eg: `[![Laragon][Laragon.org][Laragon-url]`
+[![PhpStorm][phpstorm.com]][phpstorm-url]
+[![Laragon][Laragon.org]][Laragon-url]
 
 ## Definitions
 
@@ -36,33 +20,22 @@ Eg: `[![Laragon][Laragon.org][Laragon-url]`
 | BREAD | Database operations to Browse, Read, Edit, Add and Delete data                                               |
 | CRUD | More commonly used term over BREAD. Create (Add), Retrieve (Browse/Read), Update (Edit) and Delete (Delete) |
 
-TO DO: Add any extra definitions used in the document. For example, they 
-could include `MVC`, `HTTP VERB` and more.
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 ## Description
 
-TO DO: Provide a short description explaining the what, why, and how of your 
-project. 
-
-Use the following questions as a guide:
-
-- What was your motivation?
-- Why did you build this project? (Note: the answer is not "Because it was a
-  homework assignment.")
-- What problem does it solve?
-- What did you learn?
+This project was made to Share Jokes with other Users in a social media(-like) format.  
+My main motivation was to be able to share funny and not-so-funny jokes with friends.  
+So I built this project for that reason. to share these short jokes.  
+This project solved my issue of knowing what jokes other people found funny.  
+specifically I solved this issue with a Like and Dislike System.  
+ultimately my takeaway from this project was that I don't want to write another line of PHP again
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
 ## Table of Contents
-
-TO DO: Add extra, or update the contents as needed, then remove this line.
 
 - [Description](#description)
 - [Definitions](#definitions)
@@ -77,12 +50,18 @@ TO DO: Add extra, or update the contents as needed, then remove this line.
 
 ## Installation
 
-What are the steps required to install your project? Provide a step-by-step
-description of how to get the development environment running.
+simply Clone the Repo, install npm and composer
 
-Note this may be on a free hosting system using any suitable method you 
-wish. It also may be on a local machine where the project is cloned to the 
-local and then set up and run.
+```shell
+  npm install
+  composer install
+```
+
+Then run
+
+```shell
+    composer run dev
+```
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -97,25 +76,30 @@ To add a screenshot, create an `assets/images` folder in your repository and
 upload your screenshot to it. Then, using the relative filepath, add it to
 your README using the following syntax:
 
-    ```md
-    ![alt text](../assets/images/screenshot.png)
-    ```
+To Use this Project (as a user) first register using the register button in the navigation bar  
+![](assets/images/step1.png)  
+Then enter yoour Name, Email and password that you'd like to use for this all and click register  
+![](assets/images/step2.png)  
+Then verify your account via email.  
+![](assets/images/step3.png)  
+Congrats, you're a user now. Let's publish your first joke  
+There are already some Jokes there but head to the top right and click 'New Joke'  
+![](assets/images/step4.png)
+Now enter the details on the joke. e.g. the hook, the punchline, and the category  
+Then hit 'Save'
+![](assets/images/step5.png)
+Finally, you'll be redirected back to the Main Jokes page where you can see your joke.  
+From here just hit 'Show' (you can also hit 'Edit' to bring up the editing menu, 
+and you can also hit 'Delete' to move the joke to the trash pile)  
+![](assets/images/step6.png)
+Lastly after making your joke. you and others can either 'Like' it or 'Dislike' it.  
+If you made an error, or just want to change the joke you can go to the bottom and hit exit.  
+![](assets/images/step7.png)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 ## Credits
-
-TO DO: List your collaborators, if any, with links to their GitHub 
-profiles. This should include the TAFE and your lecturers' GitHub profiles. 
-
-If you used any third-party assets that require attribution, list the creators
-with links to their primary web presence in this section. For example 
-FontAwesome, TailwindCSS etc.
-
-If you follow any tutorials, include links to those here as well. This would 
-include the Traversy Media course(s), YouTube videos, written tutorials 
-and books. 
 
 - Font Awesome. (n.d.). Fontawesome.com. https://fontawesome.com
 - Laravel - The PHP Framework For Web Artisans. (2011). Laravel.com. https://laravel.com
@@ -186,19 +170,18 @@ The Users feature includes the standard CRUD/BREAD:
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Tests
+<!--## Tests
 
 Go the extra mile and write tests for your application. Then provide examples on how to run them here.
 
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">back to top</a>)</p> -->
 
 
 ## Contact
 
-Your Name - email@email_client.com
+Ryan Kelley - 20136584@tafe.wa.edu.au
 
-Project Link: https://github.com/github_username/repo_name
+Project Link: https://github.com/sparrowsaurora/RK-saas-fed-at2-pt2
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -206,12 +189,8 @@ Project Link: https://github.com/github_username/repo_name
 
 ## Licence
 
-TO DO: Summarise/define the Licence here. Link to the Licence file.
+This Project Uses [GNU GPLv3](License.md).
 
-The last section of a high-quality README file is the licence. This lets other
-developers know what they can and cannot do with your project. If you need
-help choosing a licence, refer
-to [https://choosealicense.com/](https://choosealicense.com/).
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -262,3 +241,12 @@ rendered page on GitHub.
 [Php.com]: https://img.shields.io/badge/Php-777BB4?style=for-the-badge&logo=php&logoColor=white
 
 [Php-url]: https://inertiajs.com
+
+[phpstorm.com]: https://img.shields.io/badge/PhpStorm-000000?style=for-the-badge&logo=phpstorm&logoColor=white
+
+[phpstorm-url]: https://www.jetbrains.com/phpstorm/
+
+[Laragon.org]: https://img.shields.io/badge/Laragon-4CAF50?style=for-the-badge&logoColor=white
+
+
+[Laragon-url]: https://laragon.org/

@@ -46,6 +46,7 @@
 
         <div class="mt-4">
             {{ $jokes->links() }}
+            <a href="{{ route('jokes.trash') }}" class="px-4 py-2 underline text-red-500">Trash</a>
         </div>
     </div>
 </x-app-layout>

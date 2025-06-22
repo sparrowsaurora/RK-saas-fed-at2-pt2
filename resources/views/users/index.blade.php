@@ -82,6 +82,7 @@
 
                     <footer class="px-4 pb-2 pt-4">
                         {{ $users->links() }}
+                        <a href="{{ route('users.trash') }}" class="px-4 py-2 underline text-red-500">Trash</a>
                     </footer>
                 </article>
 
