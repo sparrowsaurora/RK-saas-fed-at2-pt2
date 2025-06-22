@@ -24,6 +24,11 @@ class CategorySeeder extends Seeder
             'School',
             'Politics',
             'Workplace',
+            'Lightbulb',
+            'Mum',
+            'Science',
+            'Maths',
+            'Pirate',
         ];
 
         foreach ($categories as $name) {
