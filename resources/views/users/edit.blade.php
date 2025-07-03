@@ -8,7 +8,7 @@
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
                 <form method="POST" action="{{ route('users.update', $user) }}">
                     @csrf
-                    @method('PUT')
+                    @method('PATCH')
 
                     <div class="grid grid-cols-1 gap-4">
                         <x-input-label for="name" :value="__('Name')" />
@@ -41,6 +41,15 @@
                         </div>
                     </div>
                 </form>
+                @if ($errors->any())
+                    <div class="mb-4 text-red-600">
+                        <ul class="list-disc list-inside text-sm">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

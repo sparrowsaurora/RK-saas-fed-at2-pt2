@@ -36,6 +36,7 @@ class UserSeeder extends Seeder
                 'password' => 'Password1',
                 'email_verified_at' => now(),
                 'role' => 'Client',
+                'assigned_staff_id' => 200,
             ],
             [
                 'id' => 202,
@@ -60,11 +61,12 @@ class UserSeeder extends Seeder
                 'password' => 'Password1',
                 'email_verified_at' => now(),
                 'role' => 'Client',
+                'assigned_staff_id' => 200,
             ],
         ];
 
         foreach ($seedUsers as $userData) {
-            $role = $userData['role']; // Save and remove role from data
+            $role = $userData['role'];
             unset($userData['role']);
 
             $user = User::updateOrCreate(
@@ -74,9 +76,7 @@ class UserSeeder extends Seeder
                 ])
             );
 
-            // Assign role using Spatie
             $user->assignRole($role);
         }
-
     }
 }

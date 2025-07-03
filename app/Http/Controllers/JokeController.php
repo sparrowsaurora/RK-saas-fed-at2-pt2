@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Http\Requests\StoreJokeRequest;
 use App\Http\Requests\UpdateJokeRequest;
 use App\Models\Joke;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class JokeController extends Controller
 {
+    use AuthorizesRequests;
     public function index(Request $request)
     {
         $categoryId = $request->query('category');
@@ -43,7 +47,7 @@ class JokeController extends Controller
     public function store(StoreJokeRequest $request)
     {
         $data = $request->validated();
-        $data['user_id'] = auth()->id();
+        $data['user_id'] =  Auth::id();
 
         $joke = Joke::create($data);
 
@@ -65,18 +69,17 @@ class JokeController extends Controller
 
     public function edit(Joke $joke)
     {
-        if (auth()->user()->hasRole('Client') && $joke->user_id !== auth()->id()) {
-            abort(403);
-        }
+        $this->authorize('update', $joke);
+
         $categories = Category::all();
         return view('jokes.edit', compact('joke', 'categories'));
     }
 
+
     public function update(Request $request, Joke $joke)
     {
-        if (auth()->user()->hasRole('Client') && $joke->user_id !== auth()->id()) {
-            abort(403);
-        }
+        $this->authorize('update', $joke);
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
@@ -90,12 +93,12 @@ class JokeController extends Controller
         return redirect()->route('jokes.index')->with('success', 'Joke updated successfully.');
     }
 
-
     public function destroy(Joke $joke)
     {
         if (auth()->user()->hasRole('Client') && $joke->user_id !== auth()->id()) {
             abort(403);
         }
+
         $joke->delete();
         return redirect()->route('jokes.index')->with('success', 'Joke deleted (soft) successfully!');
     }
@@ -116,13 +119,6 @@ class JokeController extends Controller
         return redirect()->route('jokes.trash')->with('success', 'Joke restored successfully!');
     }
 
-    public function restoreAll()
-    {
-        Joke::onlyTrashed()->restore();
-
-        return redirect()->route('jokes.trash')->with('success', 'All jokes restored!');
-    }
-
     public function forceDelete($id)
     {
         $joke = Joke::onlyTrashed()->findOrFail($id);
@@ -131,12 +127,28 @@ class JokeController extends Controller
         return redirect()->route('jokes.trash')->with('success', 'Joke permanently deleted!');
     }
 
+    public function restoreAll()
+    {
+        if (!auth()->user()->hasAnyRole(['Administrator', 'Staff'])) {
+            abort(403);
+        }
+
+        Joke::onlyTrashed()->restore();
+
+        return redirect()->route('jokes.trash')->with('success', 'All jokes restored!');
+    }
+
     public function forceDeleteAll()
     {
+        if (!auth()->user()->hasAnyRole(['Administrator', 'Staff'])) {
+            abort(403);
+        }
+
         Joke::onlyTrashed()->forceDelete();
 
         return redirect()->route('jokes.trash')->with('success', 'All jokes permanently deleted!');
     }
+
 
     public function byCategory(Category $category)
     {
@@ -144,4 +156,3 @@ class JokeController extends Controller
         return view('jokes.index', compact('jokes'));
     }
 }
-

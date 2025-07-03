@@ -12,9 +12,9 @@
             <select name="category" id="category" onchange="this.form.submit()">
                 <option value="">-- All Categories --</option>
                 @foreach ($categories as $category)
-                    <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
-                        {{ $category->name }}
-                    </option>
+                <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                    {{ $category->name }}
+                </option>
                 @endforeach
             </select>
         </form>
@@ -29,24 +29,30 @@
             </thead>
             <tbody>
                 @foreach ($jokes as $joke)
-                    <tr class="border-t">
-                        <td class="px-4 py-2">{{ $joke->title }}</td>
-                        <td class="px-4 py-2 text-center">
-                            <a href="{{ route('jokes.show', $joke) }}" class="text-blue-600 hover:underline">Show</a> |
-                            <a href="{{ route('jokes.edit', $joke) }}" class="text-amber-600 hover:underline">Edit</a> |
-                            <form action="{{ route('jokes.destroy', $joke) }}" method="POST" class="inline">
-                                @csrf @method('DELETE')
-                                <button onclick="return confirm('Move to trash?')" class="text-red-600 hover:underline">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
+                <tr class="border-t">
+                    <td class="px-4 py-2">{{ $joke->title }}</td>
+                    <td class="px-4 py-2 text-center">
+                        | <a href="{{ route('jokes.show', $joke) }}" class="text-blue-600 hover:underline">Show</a> |
+                        @can('update', $joke)
+                        <a href="{{ route('jokes.edit', $joke) }}" class="text-amber-600 hover:underline">Edit</a> |
+                        @endcan
+                        @can('delete', $joke)
+                        <form action="{{ route('jokes.destroy', $joke) }}" method="POST" class="inline">
+                            @csrf @method('DELETE')
+                            <button onclick="return confirm('Move to trash?')" class="text-red-600 hover:underline">Delete</button> |
+                        </form>
+                            @endcan
+                    </td>
+                </tr>
                 @endforeach
             </tbody>
         </table>
-
         <div class="mt-4">
             {{ $jokes->links() }}
+            @role('Administrator|Staff')
             <a href="{{ route('jokes.trash') }}" class="px-4 py-2 underline text-red-500">Trash</a>
+            @endcan
         </div>
+
     </div>
 </x-app-layout>
