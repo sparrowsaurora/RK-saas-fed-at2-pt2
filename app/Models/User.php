@@ -2,24 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory>
-     * @method bool hasRole(string|array $roles)
-     * @method \Illuminate\Support\Collection getRoleNames()
-     */
-    use HasRoles;
-    use HasFactory;
-    use Notifiable;
-    use SoftDeletes;
-
+    /** @use HasFactory<UserFactory> */
+    use HasFactory, Notifiable, HasApiTokens, hasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -30,13 +25,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-        'given_name',
-        'family_name',
-        'city',
-        'state',
-        // add all other columns you want mass assignable here
+        'status',
     ];
-
 
     /**
      * The attributes that should be hidden for serialization.
@@ -53,23 +43,39 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @return array<string, string>
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
 
-    public function reactions()
+    public function jokes(): HasMany
+    {
+        return $this->hasMany(Joke::class);
+    }
+
+    public function jokeReactions()
     {
         return $this->hasMany(JokeReaction::class);
     }
 
-    public function staff()
+    public function unsuspendUser()
     {
-        return $this->belongsTo(User::class, 'assigned_staff_id');
+        $this->status = null;
+        $this->save();
     }
 
-    public function clients()
+    public function suspendUser()
     {
-        return $this->hasMany(User::class, 'assigned_staff_id');
+        $this->status = 'suspended';
+        $this->save();
     }
+
+    public function role()
+    {
+        return $this->roles;
+    }
+
 }

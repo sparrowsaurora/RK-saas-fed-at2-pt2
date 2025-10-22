@@ -9,9 +9,16 @@ use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        commands: __DIR__.'/../routes/console.php',
+        web: __DIR__ . '/../routes/web.php',
+        commands: __DIR__ . '/../routes/console.php',
         health: '/up',
+        api: __DIR__ . '/../routes/api.php',
+        then: function () {
+            /* Add further API versions as required */
+            Route::middleware('api')
+                ->prefix('api/v3')
+                ->group(base_path('routes/api_v3.php'));
+        }
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
@@ -21,5 +28,14 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->render(function (ModelNotFoundException $error, Request $request) {
+            if ($request->wantsJson()) {
+                return response()->json(
+                    [
+                        'error' => 'entry for ' . str_replace('App', '', $error->getModel()) . ' not found'
+                    ],
+                    404
+                );
+            }
+        });
     })->create();

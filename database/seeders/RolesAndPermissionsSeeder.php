@@ -51,37 +51,39 @@ class RolesAndPermissionsSeeder extends Seeder
         }
 
         // Create Roles
+        $superUser = Role::firstOrCreate(['name' => 'Super-User']);
         $admin = Role::firstOrCreate(['name' => 'Administrator']);
         $staff = Role::firstOrCreate(['name' => 'Staff']);
         $client = Role::firstOrCreate(['name' => 'Client']);
 
         // Assign permissions to roles
-        $admin->syncPermissions(Permission::all());
-
-        $staff->syncPermissions([
-            'user.browse',
-            'user.show',
-            'user.edit',
-            'user.add',
-            'user.delete',
-            'joke.browse',
-            'joke.show',
-            'joke.edit',
-            'joke.delete',
-            'joke.trash.recover.one',
-            'joke.trash.remove.one',
-        ]);
-
-        $client->syncPermissions([
-            'joke.browse',
-            'joke.show',
-            'joke.edit',
-            'joke.add',
-            'joke.delete',
-            'joke.trash.recover.one',
-            'joke.trash.remove.one',
-            'joke.trash.empty.all',
-            'joke.trash.restore.all',
-        ]);
+//        $superUser->syncPermissions(Permission::all());
+//        $admin->syncPermissions(Permission::all());
+//
+//        $staff->syncPermissions([
+//            'user.browse',
+//            'user.show',
+//            'user.edit',
+//            'user.add',
+//            'user.delete',
+//            'joke.browse',
+//            'joke.show',
+//            'joke.edit',
+//            'joke.delete',
+//            'joke.trash.recover.one',
+//            'joke.trash.remove.one',
+//        ]);
+//
+//        $client->syncPermissions([
+//            'joke.browse',
+//            'joke.show',
+//            'joke.edit',
+//            'joke.add',
+//            'joke.delete',
+//            'joke.trash.recover.one',
+//            'joke.trash.remove.one',
+//            'joke.trash.empty.all',
+//            'joke.trash.restore.all',
+//        ]);
     }
 }
