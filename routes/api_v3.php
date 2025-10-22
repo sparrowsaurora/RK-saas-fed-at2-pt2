@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\v3\JokeController as JokeControllerV3;
 use App\Http\Controllers\Api\v3\JokeReactionController as JokeReactionControllerV3;
 use App\Http\Controllers\Api\v3\UserController as UserControllerV3;
 use App\Http\Controllers\Api\v3\RoleController as RoleControllerV3;
+use App\Responses\ApiResponse;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -140,6 +141,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
                         });
                 });
         });
+});
+
+// For testing API base returns :200
+route::get('/', function () {
+    return ApiResponse::success([], "success");
 });
 
 
