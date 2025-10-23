@@ -1,9 +1,21 @@
 <?php
 
 use \App\Models\Category;
+use App\Models\User;
+use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-const API_VER = 'v3';
+beforeEach(function () {
+    $this->seed(RolesAndPermissionsSeeder::class);
+    $this->user = User::factory()->create();
+    $this->user->assignRole('Super-User');
+    $this->actingAs($this->user, 'sanctum');
+
+});
+
+if (!defined('API_VER')) {
+    define('API_VER', 'v3');
+}
 
 uses(RefreshDatabase::class);
 
@@ -29,22 +41,30 @@ test('retrieve all categories', function () {
 
 test('retrieve one category', function () {
     // Arrange
-    $categories = Category::factory(1)->create();
+    $category = Category::factory()->create();
 
     $data = [
         'message' => "Category retrieved",
         'success' => true,
-        'data' => $categories->toArray(),
+        'data' => [
+            'id' => $category->id,
+            'title' => $category->title,
+            'description' => $category->description,
+            'created_at' => $category->created_at->toJSON(),
+            'updated_at' => $category->updated_at->toJSON(),
+            'deleted_at' => null,
+            'jokes' => [],
+        ],
     ];
 
     // Act
-    $response = $this->getJson('/api/' . API_VER . '/categories/1');
+    $response = $this->getJson('/api/' . API_VER . '/categories/' . $category->id);
 
     // Assert
     $response
         ->assertStatus(200)
-        ->assertJson($data)
-        ->assertJsonCount(1, 'data');
+        ->assertJson($data);
+//        ->assertJsonCount(1, 'data');
 });
 
 

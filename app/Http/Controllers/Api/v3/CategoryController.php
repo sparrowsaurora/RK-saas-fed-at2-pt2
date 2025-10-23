@@ -18,11 +18,10 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function index()
     {
         $categories = Category::all();
-        $user_token = $request->user();
-        return ApiResponse::success(['categories'=> $categories, 'user' => $user_token], "Categories retrieved");
+        return ApiResponse::success($categories, "Categories retrieved");
     }
 
     public function search(Request $request): JsonResponse
@@ -86,17 +85,24 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        $category = Category::whereId($id)->withCount('jokes')->get();
-//        $category = Category::whereId($id)->get();
-        $jokes = $category->jokesByDateAddedDesc()->get();
-        if (count($category) === 0) {
+//        $category = Category::whereId($id)->withCount('jokes')->get();
+////        $category = Category::whereId($id)->get();
+//        $jokes = $category->jokesByDateAddedDesc()->get();
+        $category = Category::with(['jokes' => function ($query) {
+            $query->orderByDesc('created_at');
+        }])->find($id);
+
+        if (!$category) {
             return ApiResponse::error([], "Category not found", 404);
         }
+
         return ApiResponse::success(
-            [
-                'category' => $category,
-                'jokesInCategory' => $jokes
-            ], "Category retrieved"
+            $category
+//            [
+//                'category' => $category,
+//                'jokesInCategory' => $jokes
+//            ]
+            , "Category retrieved"
         );
     }
 

@@ -81,7 +81,7 @@ Route::middleware(['auth:sanctum', 'role:Super-User|Administrator|Staff'])->grou
 
 
 /* Categories Controller Routes ------------------------------------------------------ */
-Route::middleware(['auth:sanctum', 'role:Super-User|Administrator|Staff|'])->group(function () {
+Route::middleware(['auth:sanctum', 'role:Super-User|Administrator|Staff'])->group(function () {
 //Route::middleware(['auth:sanctum', 'role:super-user|admin|staff'])->group(function () {
 //    Route::resource("categories", CategoryControllerV3::class);
     Route::prefix('categories')
