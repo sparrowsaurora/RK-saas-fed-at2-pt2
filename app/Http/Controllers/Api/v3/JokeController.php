@@ -36,7 +36,7 @@ class JokeController extends Controller
             'title' => ['required', 'string', 'min:4'],
             'content' => ['required', 'string', 'min:6'],
             'category_id' => ['required', 'integer', 'exists:categories,id'],
-            'published_at' => ['nullable', 'date'],
+//            'published_at' => ['nullable', 'date'],
         ]);
 
         // Automatically get the user from the Bearer token
@@ -46,7 +46,7 @@ class JokeController extends Controller
         $joke = Joke::create([
             'title' => $validated['title'],
             'content' => $validated['content'],
-            'published_at' => $validated['published_at'] ?? null,
+//            'published_at' => $validated['published_at'] ?? null,
             'user_id' => $user->id,
         ]);
 
@@ -85,7 +85,7 @@ class JokeController extends Controller
         $validated = $request->validate([
             'title' => ['sometimes', 'string', 'min:4'],
             'content' => ['sometimes', 'string', 'min:6'],
-            'published_at' => ['nullable', 'date'],
+//            'published_at' => ['nullable', 'date'],
         ]);
 
         $joke = Joke::find($id);
@@ -214,7 +214,7 @@ class JokeController extends Controller
         $joke = Joke::inRandomOrder()->first();
 
         $user = $request->user();
-        return ApiResponse::success([$joke, 'user' => $user], "Random joke retrieved");
+        return ApiResponse::success($joke, "Random joke retrieved");
     }
 
     // Display all jokes in a category

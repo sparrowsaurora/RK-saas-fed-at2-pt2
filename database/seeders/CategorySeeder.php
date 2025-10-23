@@ -66,8 +66,12 @@ class CategorySeeder extends Seeder
         shuffle($seedCategories);
 
         foreach ($seedCategories as $seedCategory) {
-            Category::create($seedCategory);
+            Category::firstOrCreate(
+                ['title' => $seedCategory['title']], // uniqueness check
+                ['description' => $seedCategory['description']]
+            );
         }
+
 
         // Category::factory(10)->create();
 
