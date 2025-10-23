@@ -14,6 +14,11 @@ class JokeReaction extends Model {
         'is_positive',
     ];
 
+    protected $casts = [
+        'is_positive' => 'boolean',
+    ];
+
+
     public function joke() {
         return $this->belongsTo(Joke::class);
     }

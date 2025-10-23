@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('joke_id')->constrained()->onDelete('cascade');
-            $table->enum('type', ['like', 'dislike']);
+//            $table->enum('type', ['like', 'dislike']);
+            $table->boolean('is_positive');
             $table->timestamps();
 
             $table->unique(['user_id', 'joke_id']); // One reaction per user per joke

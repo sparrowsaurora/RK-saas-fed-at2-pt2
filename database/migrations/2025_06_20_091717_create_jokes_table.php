@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');         // joke title
             $table->text('content');         // joke content/text
             $table->timestamp('published_at')->nullable();
-            $table->unsignedBigInteger('user_id');  // who created it
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
             $table->softDeletes();           // for soft delete support
 
