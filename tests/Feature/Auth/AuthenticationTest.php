@@ -1,29 +1,40 @@
 <?php
 
 use App\Models\User;
+use Database\Seeders\RolesAndPermissionsSeeder;
 
-test('login screen can be rendered', function () {
-    $response = $this->get('/login');
-
-    $response->assertStatus(200);
+beforeEach(function () {
+    $this->seed(RolesAndPermissionsSeeder::class);
 });
+
+if (!defined('API_VER')) {
+    define('API_VER', 'v3');
+}
 
 test('users can authenticate using the login screen', function () {
     $user = User::factory()->create();
 
-    $response = $this->post('/login', [
+    $response = $this->post('/api/' . API_VER . '/auth/login', [
         'email' => $user->email,
         'password' => 'password',
     ]);
 
-    $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard', absolute: false));
+    $response->assertStatus(200)
+        ->assertJsonStructure([
+            'success',
+            'message',
+            'data' => [
+                'user' => ['id', 'name', 'email'],
+                'token',
+            ],
+        ])
+        ->assertJson(['success' => true, 'message' => 'Login successful']);
 });
 
 test('users can not authenticate with invalid password', function () {
     $user = User::factory()->create();
 
-    $this->post('/login', [
+    $this->post('/api/' . API_VER . '/auth/login', [
         'email' => $user->email,
         'password' => 'wrong-password',
     ]);
@@ -33,9 +44,12 @@ test('users can not authenticate with invalid password', function () {
 
 test('users can logout', function () {
     $user = User::factory()->create();
+    $token = $user->createToken('TestToken')->plainTextToken;
 
-    $response = $this->actingAs($user)->post('/logout');
+    $response = $this->postJson('/api/' . API_VER . '/auth/logout', [], [
+        'Authorization' => 'Bearer ' . $token
+    ]);
 
-    $this->assertGuest();
-    $response->assertRedirect('/');
+    $response->assertStatus(200)
+        ->assertJson(['success' => true, 'message' => 'Logout successful']);
 });

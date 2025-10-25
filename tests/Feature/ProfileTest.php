@@ -1,85 +1,97 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
-test('profile page is displayed', function () {
+test('user profile can be retrieved', function () {
     $user = User::factory()->create();
 
     $response = $this
-        ->actingAs($user)
-        ->get('/profile');
+        ->actingAs($user, 'sanctum')
+        ->getJson('/api/v3/auth/profile');
 
-    $response->assertOk();
+    $response->assertStatus(200)
+        ->assertJsonStructure([
+            'success',
+            'message',
+            'data' => ['user' => ['id', 'name', 'email']],
+        ]);
 });
 
-test('profile information can be updated', function () {
+test('user profile can be updated', function () {
     $user = User::factory()->create();
 
     $response = $this
-        ->actingAs($user)
-        ->patch('/profile', [
+        ->actingAs($user, 'sanctum')
+        ->putJson('/api/v3/auth/profile', [
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
 
-    $response
-        ->assertSessionHasNoErrors()
-        ->assertRedirect('/profile');
-
-    $user->refresh();
-
-    expect($user->name)->toBe('Test User');
-    expect($user->email)->toBe('test@example.com');
-    expect($user->email_verified_at)->toBeNull();
+    $response->assertStatus(200)
+        ->assertJsonPath('data.user.name', 'Test User')
+        ->assertJsonPath('data.user.email', 'test@example.com');
 });
 
-test('email verification status is unchanged when the email address is unchanged', function () {
-    $user = User::factory()->create();
+test('password cannot be changed without current password', function () {
+    $user = User::factory()->create([
+        'password' => Hash::make('OldPassword1'),
+    ]);
 
     $response = $this
-        ->actingAs($user)
-        ->patch('/profile', [
-            'name' => 'Test User',
-            'email' => $user->email,
+        ->actingAs($user, 'sanctum')
+        ->putJson('/api/v3/auth/profile', [
+            'password' => 'NewPassword1',
+            'password_confirmation' => 'NewPassword1',
         ]);
 
-    $response
-        ->assertSessionHasNoErrors()
-        ->assertRedirect('/profile');
-
-    expect($user->refresh()->email_verified_at)->not->toBeNull();
+    $response->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Invalid input',
+        ]);
 });
 
-test('user can delete their account', function () {
-    $user = User::factory()->create();
+test('user can delete their account with correct credentials', function () {
+    $user = User::factory()->create([
+        'password' => Hash::make('password'),
+        'email' => 'test@example.com',
+    ]);
 
     $response = $this
-        ->actingAs($user)
-        ->delete('/profile', [
+        ->actingAs($user, 'sanctum')
+        ->deleteJson('/api/v3/auth/profile', [
+            'email' => 'test@example.com',
             'password' => 'password',
         ]);
 
-    $response
-        ->assertSessionHasNoErrors()
-        ->assertRedirect('/');
+    $response->assertStatus(200)
+        ->assertJson([
+            'success' => true,
+            'message' => 'Account deleted successfully',
+        ]);
 
-    $this->assertGuest();
-    expect($user->fresh())->toBeNull();
+    expect(User::find($user->id))->toBeNull();
 });
 
-test('correct password must be provided to delete account', function () {
-    $user = User::factory()->create();
+test('user cannot delete account with wrong password', function () {
+    $user = User::factory()->create([
+        'password' => Hash::make('password'),
+        'email' => 'test@example.com',
+    ]);
 
     $response = $this
-        ->actingAs($user)
-        ->from('/profile')
-        ->delete('/profile', [
+        ->actingAs($user, 'sanctum')
+        ->deleteJson('/api/v3/auth/profile', [
+            'email' => 'test@example.com',
             'password' => 'wrong-password',
         ]);
 
-    $response
-        ->assertSessionHasErrorsIn('userDeletion', 'password')
-        ->assertRedirect('/profile');
+    $response->assertStatus(403)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Invalid password',
+        ]);
 
-    expect($user->fresh())->not->toBeNull();
+    expect(User::find($user->id))->not->toBeNull();
 });

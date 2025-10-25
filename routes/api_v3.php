@@ -36,8 +36,8 @@ Route::prefix('auth')
         Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('profile', [AuthControllerV3::class, 'profile']);
             Route::post('logout', [AuthControllerV3::class, 'logout']);
-            Route::put('edit', [AuthControllerV3::class, 'edit']);
-            Route::delete('delete', [AuthControllerV3::class, 'delete']);
+            Route::put('profile', [AuthControllerV3::class, 'edit']);
+            Route::delete('profile', [AuthControllerV3::class, 'delete']);
         });
     });
 
@@ -167,4 +167,5 @@ route::get('test/un-auth', function () {
     return ApiResponse::success([], "success");
 })->middleware('deny.role');
 
-
+// auth???
+require __DIR__ . '/auth.php';
