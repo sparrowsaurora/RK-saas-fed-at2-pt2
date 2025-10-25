@@ -147,5 +147,24 @@ Route::middleware(['auth:sanctum'])->group(function () {
 route::get('/', function () {
     return ApiResponse::success([], "success");
 });
+// For testing superUser only route :200
+route::get('test/super-user', function () {
+    return ApiResponse::success([], "success");
+})->middleware('role:Super-User');
+// For testing admin only route :200
+route::get('test/admin', function () {
+    return ApiResponse::success([], "success");
+})->middleware('role:Administrator');
+// For testing staff only route :200
+route::get('test/staff', function () {
+    return ApiResponse::success([], "success");
+})->middleware('role:Staff');
+// For testing client only route :200
+route::get('test/client', function () {
+    return ApiResponse::success([], "success");
+})->middleware('role:Client');
+route::get('test/un-auth', function () {
+    return ApiResponse::success([], "success");
+})->middleware('deny.role');
 
 

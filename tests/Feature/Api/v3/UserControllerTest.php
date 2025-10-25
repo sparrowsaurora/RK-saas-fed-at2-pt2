@@ -1,9 +1,20 @@
 <?php
 
 use App\Models\User;
+use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-const API_VER = 'v3';
+beforeEach(function () {
+    $this->seed(RolesAndPermissionsSeeder::class);
+    $this->user = User::factory()->create();
+    $this->user->assignRole('Super-User');
+    $this->actingAs($this->user, 'sanctum');
+
+});
+
+if (!defined('API_VER')) {
+    define('API_VER', 'v3');
+}
 
 uses(RefreshDatabase::class);
 
@@ -12,18 +23,17 @@ test('retrieve all users', function () {
     $users = User::factory(5)->create();
 
     $expectedData = [
-        'message' => 'Users retrieved',
+        'message' => 'Users retrieved successfully',
         'success' => true,
-        'data' => $users->toArray(),
     ];
 
     // Act
-    $response = $this->getJson('/api/' . API_VER . '/users');
+    $response = $this->getJson('/api/' . API_VER . '/admin/users');
 
     // Assert
     $response
         ->assertStatus(200)
-        ->assertJsonCount(5, 'data')
+        ->assertJsonCount(6, 'data.users') // 5 + user for test
         ->assertJson($expectedData);
 });
 
@@ -32,13 +42,19 @@ test('retrieve one user', function () {
     $user = User::factory()->create();
 
     $expectedData = [
-        'message' => 'User retrieved',
+        'message' => 'User retrieved successfully',
         'success' => true,
-        'data' => [$user->toArray()],
+        'data' => [
+            'User' => [
+                'id' => $user->id,
+                'email' => $user->email,
+                'name' => $user->name,
+            ]
+        ],
     ];
 
     // Act
-    $response = $this->getJson('/api/' . API_VER . '/users/' . $user->id);
+    $response = $this->getJson('/api/' . API_VER . '/admin/users/' . $user->id);
 
     // Assert
     $response
@@ -55,7 +71,7 @@ test('return error on missing user', function () {
     ];
 
     // Act
-    $response = $this->getJson('/api/' . API_VER . '/users/9999');
+    $response = $this->getJson('/api/' . API_VER . '/admin/users/9999');
 
     // Assert
     $response
@@ -64,6 +80,12 @@ test('return error on missing user', function () {
         ->assertJsonCount(0, 'data');
 });
 
+///////////////////
+///
+/// NOT A METHOD USER'S CREATE OWN THROUGH REGISTER
+///
+/// ///////////////
+/*
 test('create a new user', function () {
     // Arrange
     $data = [
@@ -78,7 +100,7 @@ test('create a new user', function () {
     ];
 
     // Act
-    $response = $this->postJson('/api/' . API_VER . '/users', $data);
+    $response = $this->postJson('/api/' . API_VER . '/admin/users', $data);
 
     // Assert
     $response
@@ -94,7 +116,6 @@ test('create a new user', function () {
         'email' => 'fake@example.com',
     ]);
 });
-
 test('create user with invalid data fails', function () {
     // Missing name, invalid email, short password
     $data = [
@@ -103,7 +124,7 @@ test('create user with invalid data fails', function () {
         'password' => '123',
     ];
 
-    $response = $this->postJson('/api/' . API_VER . '/users', $data);
+    $response = $this->postJson('/api/' . API_VER . '/admin/users', $data);
 
     $response
         ->assertStatus(422)
@@ -113,6 +134,7 @@ test('create user with invalid data fails', function () {
             'password',
         ]);
 });
+*/
 
 test('update user information', function () {
     // Arrange
@@ -125,16 +147,16 @@ test('update user information', function () {
     $expected = [
         'message' => 'User updated successfully',
         'success' => true,
-        'data' => $data,
     ];
 
     // Act
-    $response = $this->putJson('/api/' . API_VER . '/users/' . $user->id, $data);
+    $response = $this->putJson('/api/' . API_VER . '/admin/users/' . $user->id, $data);
 
     // Assert
     $response
         ->assertStatus(200)
-        ->assertJsonFragment($expected);
+        ->assertJsonFragment($expected)
+        ->assertJsonFragment($data);
 
     $this->assertDatabaseHas('users', [
         'email' => 'updated@example.com',
@@ -146,12 +168,12 @@ test('delete a user', function () {
     $user = User::factory()->create();
 
     $expected = [
-        'message' => 'User deleted successfully',
+        'message' => 'User <'. $user->id .'> moved deleted successfully',
         'success' => true,
     ];
 
     // Act
-    $response = $this->deleteJson('/api/' . API_VER . '/users/' . $user->id);
+    $response = $this->deleteJson('/api/' . API_VER . '/admin/users/' . $user->id);
 
     // Assert
     $response
@@ -170,7 +192,7 @@ test('delete missing user returns error', function () {
         'data' => [],
     ];
 
-    $response = $this->deleteJson('/api/' . API_VER . '/users/9999');
+    $response = $this->deleteJson('/api/' . API_VER . '/admin/users/9999');
 
     $response
         ->assertStatus(404)

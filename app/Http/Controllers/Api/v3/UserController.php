@@ -59,7 +59,7 @@ class UserController extends Controller
         $user = User::with('roles')->find($id);
 
         if (!$user) {
-            return ApiResponse::error([], "User not found");
+            return ApiResponse::error([], "User not found", 404);
         }
 
         $userArray = $user->toArray();
@@ -100,7 +100,7 @@ class UserController extends Controller
         }
 
         $user->save();
-        return ApiResponse::success(['User' => $user], 'User updated successfully');
+        return ApiResponse::success($user, 'User updated successfully');
 
     }
 
