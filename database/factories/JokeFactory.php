@@ -29,14 +29,16 @@ class JokeFactory extends Factory
         ];
     }
 
-    public function configure()
+    public function withCategory()
     {
         return $this->afterCreating(function (Joke $joke) {
-            // Attach 1-3 random categories
-            $categories = Category::factory()->count(rand(1, 3))->create();
-            $joke->categories()->attach($categories->pluck('id'));
+//            // Attach 1-3 random categories
+//            $categories = Category::factory()->count(rand(1, 3))->create();
+//            $joke->categories()->attach($categories->pluck('id'));
+            $joke->categories()->attach(Category::factory()->create());
         });
     }
+
 
 //[
 //'title' => "Skeleton Fight",
