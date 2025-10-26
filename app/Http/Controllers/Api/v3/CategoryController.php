@@ -24,31 +24,33 @@ class CategoryController extends Controller
         return ApiResponse::success($categories, "Categories retrieved");
     }
 
-    public function search(Request $request): JsonResponse
+    public function search(Request $request)
     {
-        $validated = $request->validate([
-            'search' => ['nullable', 'string', 'max:32'],
-        ]);
-        $search = $validated['search'];
+        $search = $request->input('search');
 
-        if (empty($search) || $search == '') {
-            return ApiResponse::error([], "search parameter is empty");
-        };
+        if ($search === null) {
+            return ApiResponse::error([], "search parameter is empty", 200);
+        }
 
-        $categories = Category::where(function ($query) use ($search) {
-            $query->where('title', 'like', '%' . $search . '%')
-                ->orWhere('description', 'like', '%' . $search . '%');
-        })
-            ->orderBy('title')
-            ->withCount('jokes')
+        if (trim($search) === '') {
+            return ApiResponse::error([], "search parameter is empty", 200);
+        }
+
+        $categories = Category::where('title', 'like', "%{$search}%")
+            ->orWhere('description', 'like', "%{$search}%")
             ->get();
 
         if ($categories->isEmpty()) {
-            return ApiResponse::error([], "No results found");
+            return ApiResponse::error([], "No results found", 200);
         }
 
-        return ApiResponse::success(['Categories' => $categories, 'resultsCount' => $categories->count()], "Categories retrieved");
+        return ApiResponse::success([
+            'Categories' => $categories,
+            'resultsCount' => $categories->count(),
+        ], "Search results retrieved successfully");
     }
+
+
 
     /**
      * Store a newly created Category in storage.
@@ -168,11 +170,18 @@ class CategoryController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function trash(Request $request)
+    public function trash(): JsonResponse
     {
         $trashed = Category::onlyTrashed()->get();
 
-        return ApiResponse::success($trashed, "Trashed category retrieved");
+        if ($trashed->isEmpty()) {
+            return ApiResponse::success([], "No trashed categories found");
+        }
+
+        return ApiResponse::success([
+            'Categories' => $trashed,
+            'resultsCount' => $trashed->count(),
+        ], "Trashed category retrieved");
     }
 
     /**

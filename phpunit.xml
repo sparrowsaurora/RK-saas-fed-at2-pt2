@@ -16,6 +16,33 @@
         <include>
             <directory>app</directory>
         </include>
+        <exclude>
+            <!-- Exclude Laravel's built-in Auth scaffolding -->
+            <directory>app/Http/Controllers/Auth</directory>
+
+            <!-- Exclude front-end view components -->
+            <directory>app/View/Components</directory>
+
+            <!-- Exclude default policies and service providers -->
+            <directory>app/Policies</directory>
+            <file>app/Providers/TelescopeServiceProvider.php</file>
+
+            <!-- (Optional) exclude static pages or demo controllers -->
+            <directory>app/Http/Controllers/StaticPages</directory>
+
+            <directory>app/Http/Requests</directory>
+
+            <!-- Exclude only files directly in Http/Controllers -->
+            <file>app/Http/Controllers/Controller.php</file>
+            <file>app/Http/Controllers/JokeController.php</file>
+            <file>app/Http/Controllers/JokeReactionController.php</file>
+            <file>app/Http/Controllers/UserController.php</file>
+            <file>app/Http/Controllers/CategoryController.php</file>
+            <file>app/Http/Controllers/ProfileController.php</file>
+            <file>app/Http/Controllers/StaticPages.php</file>
+            <!-- Exclude role controller as tests don't use the file (file is a modifier) -->
+            <file>app/Http/Controllers/Api/v3\RoleController.php</file>
+        </exclude>
     </source>
     <php>
         <env name="APP_ENV" value="testing"/>

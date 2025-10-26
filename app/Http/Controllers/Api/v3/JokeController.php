@@ -125,7 +125,7 @@ class JokeController extends Controller
         // check user owns joke
         $user = $request->user();
 //        if ($joke->user_id !== $user->id || !$user->hasAnyRole(['super-user', 'admin'])) {
-        if ($joke->user_id !== $user->id || !$user->hasAnyRole(['admin', 'staff', 'super-user'])) {
+        if ($joke->user_id !== $user->id || !$user->hasAnyRole(['Super-User','Administrator','Staff'])) {
             return ApiResponse::error([], "You do not have permission to delete this joke", 403);
         }
 
@@ -222,7 +222,7 @@ class JokeController extends Controller
     {
         $category = Category::find($categoryId);
         if (!$category) {
-            return ApiResponse::error([], "Category not found", 404);
+            return ApiResponse::error([], "Category not found", 200);
         }
         $jokes = $category->jokesIncategory()->get();
         return ApiResponse::success($jokes, "Jokes retrieved");

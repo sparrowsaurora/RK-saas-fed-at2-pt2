@@ -162,3 +162,89 @@ test('create category description too short error', function () {
             'description',
         ]);
 });
+
+test('search returns results', function () {
+    Category::factory()->create(['title' => 'Funny']);
+    $response = $this->postJson("/api/" . API_VER . "/categories/search", ['search' => 'Funny']);
+    $response->assertStatus(200)
+        ->assertJson(['success' => true])
+        ->assertJsonStructure(['data' => ['Categories', 'resultsCount']]);
+});
+
+test('search returns no results', function () {
+    $response = $this->postJson("/api/" . API_VER . "/categories/search", ['search' => 'NoMatch']);
+    $response->assertStatus(200)
+        ->assertJson(['success' => false, 'message' => 'No results found']);
+});
+
+test('search with empty string returns error', function () {
+    $response = $this->postJson("/api/" . API_VER . "/categories/search", ['search' => '']);
+    $response->assertStatus(200)
+        ->assertJson(['success' => false, 'message' => 'search parameter is empty']);
+});
+
+test('update category successfully', function () {
+    $category = Category::factory()->create(['title' => 'Old Title']);
+    $response = $this->putJson('/api/' . API_VER . '/categories/' . $category->id, [
+        'title' => 'Updated Title',
+    ]);
+    $response->assertStatus(200)
+        ->assertJson(['message' => 'Category updated', 'success' => true]);
+});
+
+test('update category not found', function () {
+    $response = $this->putJson('/api/' . API_VER . '/categories/9999', ['title' => 'Anything']);
+    $response->assertStatus(404)
+        ->assertJson(['success' => false, 'message' => 'Category not found']);
+});
+
+test('delete category moves to trash', function () {
+    $category = Category::factory()->create();
+    $response = $this->deleteJson('/api/' . API_VER . '/categories/' . $category->id);
+    $response->assertStatus(200)
+        ->assertJson(['message' => "Category <{$category->id}> moved to trash"]);
+    $this->assertSoftDeleted('categories', ['id' => $category->id]);
+});
+
+test('delete missing category returns error', function () {
+    $response = $this->deleteJson('/api/' . API_VER . '/categories/9999');
+    $response->assertStatus(404)
+        ->assertJson(['success' => false, 'message' => 'Category not found']);
+});
+
+test('recoverAll restores trashed categories', function () {
+    $category = Category::factory()->create();
+    $category->delete();
+
+    $response = $this->postJson("/api/" . API_VER . "/categories/trash/recover");
+    $response->assertStatus(200)
+        ->assertJson(['success' => true, 'message' => 'all categories restored successfully']);
+});
+
+test('removeAll permanently deletes all trashed categories', function () {
+    $category = Category::factory()->create();
+    $category->delete();
+
+    $response = $this->deleteJson("/api/" . API_VER . "/categories/trash/empty");
+    $response->assertStatus(200)
+        ->assertJson(['success' => true, 'message' => 'all categories permanently deleted']);
+});
+
+test('recoverOne restores specific trashed category', function () {
+    $category = Category::factory()->create();
+    $category->delete();
+
+    $response = $this->postJson("/api/" . API_VER . "/categories/trash/{$category->id}/recover");
+    $response->assertStatus(200)
+        ->assertJson(['success' => true, 'message' => 'Category restored successfully']);
+});
+
+test('removeOne permanently deletes specific trashed category', function () {
+    $category = Category::factory()->create();
+    $category->delete();
+
+    $response = $this->deleteJson("/api/" . API_VER . "/categories/trash/{$category->id}/remove");
+    $response->assertStatus(200)
+        ->assertJson(['success' => true, 'message' => 'Category permanently deleted']);
+});
+

@@ -198,3 +198,67 @@ test('delete missing user returns error', function () {
         ->assertStatus(404)
         ->assertJson($expected);
 });
+
+test('admin dashboard returns counts', function () {
+    $users = User::factory(3)->create(['status' => 'suspended']);
+
+    $response = $this->getJson('/api/' . API_VER . '/admin');
+
+    $response->assertStatus(200)
+        ->assertJson([
+            'success' => true,
+            'message' => 'Dashboard data retrieved successfully',
+            'data' => [
+                'userCount' => '4', // 3 + seeded user
+                'userSuspendedCount' => '3',
+            ],
+        ]);
+});
+
+test('search returns users by name or email', function () {
+    $searchUser = User::factory()->create(['name' => 'Search Me', 'email' => 'search@example.com']);
+
+    $response = $this->postJson('/api/' . API_VER . '/admin/users/search', ['search' => 'Search']);
+
+    $response->assertStatus(200)
+        ->assertJson([
+            'success' => true,
+            'message' => 'Users retrieved',
+            'data' => ['resultsCount' => 1],
+        ]);
+});
+
+test('search with empty string returns error', function () {
+    $response = $this->postJson('/api/' . API_VER . '/admin/users/search', ['search' => '']);
+    $response->assertStatus(422)
+        ->assertJsonValidationErrors(['search']);
+});
+
+test('search with no results', function () {
+    $response = $this->postJson('/api/' . API_VER . '/admin/users/search', ['search' => 'nonexistent']);
+    $response->assertStatus(404)
+        ->assertJson(['success' => false, 'message' => 'No results found']);
+});
+
+test('suspend a user', function () {
+    $user = User::factory()->create();
+
+    $response = $this->postJson("/api/" . API_VER . "/admin/users/suspend/{$user->id}");
+
+    $response->assertStatus(200)
+        ->assertJson(['success' => true, 'message' => "suspended user <{$user->id}> successfully"]);
+
+    $this->assertEquals('suspended', $user->fresh()->status);
+});
+
+test('unsuspend a user', function () {
+    $user = User::factory()->create(['status' => 'suspended']);
+
+    $response = $this->postJson("/api/" . API_VER . "/admin/users/unsuspend/{$user->id}");
+
+    $response->assertStatus(200)
+        ->assertJson(['success' => true, 'message' => "unsuspended user <{$user->id}> successfully"]);
+
+    $this->assertNull($user->fresh()->status);
+});
+

@@ -94,16 +94,14 @@ Route::middleware(['auth:sanctum', 'role:Super-User|Administrator|Staff'])->grou
                     Route::post('/', [CategoryControllerV3::class, 'store'])->name('category.store');
                     Route::put('{category}', [CategoryControllerV3::class, 'update'])->name('category.update');
                     Route::delete('{category}', [CategoryControllerV3::class, 'destroy'])->name('category.destroy');
+                    Route::get('trash', [CategoryControllerV3::class, 'trash']);
 
                     Route::prefix('trash')
                         ->group(function () {
-                            Route::get('/', [CategoryControllerV3::class, 'trash']);
                             Route::delete('empty', [CategoryControllerV3::class, 'removeAll']);
                             Route::post('recover', [CategoryControllerV3::class, 'recoverAll']);
                             Route::delete('{id}/remove', [CategoryControllerV3::class, 'removeOne']);
                             Route::post('{id}/recover', [CategoryControllerV3::class, 'recoverOne']);
-                            /** Stop people trying to "GET" admin/categories/trash/1234/delete or similar */
-                            Route::get('{id}/{method}', [CategoryControllerV3::class, 'trash']);
                         });
                 });
         });

@@ -174,3 +174,72 @@ test('create Joke description too short error', function () {
             'content',
         ]);
 });
+
+test('update joke successfully', function () {
+    $joke = Joke::factory()->create(['user_id' => $this->user->id]);
+    $data = ['title' => 'Updated Title'];
+
+    $response = $this->putJson("/api/" . API_VER . "/jokes/{$joke->id}", $data);
+
+    $response->assertStatus(200)
+        ->assertJsonPath('data.title', 'Updated Title');
+});
+
+test('update joke not found', function () {
+    $response = $this->putJson("/api/" . API_VER . "/jokes/9999", ['title' => 'xyz:']);
+    $response->assertStatus(404)
+        ->assertJson(['success' => false, 'message' => 'Joke not found']);
+});
+
+test('update joke not owned by user', function () {
+    $otherUser = User::factory()->create();
+    $joke = Joke::factory()->create(['user_id' => $otherUser->id]);
+    $response = $this->putJson("/api/" . API_VER . "/jokes/{$joke->id}", ['title' => 'xyz:']);
+    $response->assertStatus(404)
+        ->assertJson(['success' => false, 'message' => 'You does not own the joke']);
+});
+
+test('delete joke successfully', function () {
+    $joke = Joke::factory()->create(['user_id' => $this->user->id]);
+    $response = $this->deleteJson("/api/" . API_VER . "/jokes/{$joke->id}");
+    $response->assertStatus(200)
+        ->assertJson(['success' => true, 'message' => "Joke <{$joke->id}> moved to trash"]);
+});
+
+test('delete joke not owned by user', function () {
+    $otherUser = User::factory()->create();
+    $joke = Joke::factory()->create(['user_id' => $otherUser->id]);
+    $response = $this->deleteJson("/api/" . API_VER . "/jokes/{$joke->id}");
+    $response->assertStatus(403)
+        ->assertJson(['success' => false, 'message' => 'You do not have permission to delete this joke']);
+});
+
+test('delete joke not found', function () {
+    $response = $this->deleteJson("/api/" . API_VER . "/jokes/9999");
+    $response->assertStatus(404)
+        ->assertJson(['success' => false, 'message' => 'Joke not found']);
+});
+
+test('random joke retrieved', function () {
+    $joke = Joke::factory()->create();
+    $response = $this->getJson("/api/" . API_VER . "/jokes/random");
+    $response->assertStatus(200)
+        ->assertJson(['success' => true]);
+});
+
+test('jokes by category retrieved', function () {
+    $category = Category::factory()->create();
+    $joke = Joke::factory()->create();
+    $joke->categories()->attach($category->id);
+
+    $response = $this->getJson("/api/" . API_VER . "/jokes/{$category->id}/all");
+    $response->assertStatus(200)
+        ->assertJson(['success' => true]);
+});
+
+test('jokes by category not found', function () {
+    $response = $this->getJson("/api/" . API_VER . "/jokes/9999/all");
+    $response->assertStatus(200)
+        ->assertJson(['success' => false, 'message' => 'Category not found']);
+});
+

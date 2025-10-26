@@ -120,24 +120,20 @@ class UserController extends Controller
     public function search(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'search' => ['nullable', 'string', 'max:32'],
+            'search' => ['required', 'string', 'max:32'],
         ]);
-        $search = $validated['search'];
 
-        if (empty($search) || $search == '') {
-            return ApiResponse::error([], "search parameter is empty");
-        }
+        $search = $validated['search'];
 
         $users = User::where(function ($query) use ($search) {
             $query->where('name', 'like', '%' . $search . '%')
                 ->orWhere('email', 'like', '%' . $search . '%');
         })
-            ->orderBy('title')
             ->withCount('jokes')
             ->get();
 
         if ($users->isEmpty()) {
-            return ApiResponse::error([], "No results found");
+            return ApiResponse::error([], "No results found", 404);
         }
 
         return ApiResponse::success(['Users' => $users, 'resultsCount' => $users->count()], "Users retrieved");
