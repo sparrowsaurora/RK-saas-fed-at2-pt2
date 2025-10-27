@@ -8,6 +8,15 @@
 //use App\Http\Controllers\JokeReactionController;
 //use Illuminate\Support\Facades\Route;
 //
+
+
+Route::get('/', function () {
+    return response()->json([
+        'status' => 'OK',
+        'message' => 'Laravel is running successfully on cPanel!',
+    ]);
+});
+
 //Route::get('/', [StaticPages::class, 'welcome'])->name('home');
 //Route::get('/contact', [StaticPages::class, 'contact'])->name('contact');
 //Route::get('/privacy', [StaticPages::class, 'privacy'])->name('privacy');

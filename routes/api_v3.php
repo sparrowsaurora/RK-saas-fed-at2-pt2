@@ -27,6 +27,12 @@ use Illuminate\Support\Facades\Route;
 // ->middleware(['auth:sanctum', 'role:super-user|admin|staff']);
 // ->middleware('role:super-user|admin|staff');
 
+// index route:
+Route::get('welcome', function() {
+	return ApiResponse::success([], "welcome");
+});
+
+
 /* Auth Controller Routes ------------------------------------------------------ */
 Route::prefix('auth')
     ->group(function () {

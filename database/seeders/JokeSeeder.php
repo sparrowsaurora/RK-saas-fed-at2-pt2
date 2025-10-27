@@ -6,11 +6,16 @@ use App\Models\Joke;
 use App\Models\User;
 use App\Models\Category;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
+use Faker\Factory as Faker;
+
 
 class JokeSeeder extends Seeder
 {
     public function run(): void
     {
+	$faker = Faker::create();
+
         if (User::count() === 0) {
             User::factory()->count(5)->create();
         }
@@ -137,10 +142,10 @@ class JokeSeeder extends Seeder
                 'user_id' => $users->random()->id,
             ]);
 
-            $categoryIds = collect($jokeData['category'])->map(function ($name) {
+            $categoryIds = collect($jokeData['category'])->map(function ($name) use ($faker) {
                 return Category::firstOrCreate(
                     ['title' => $name],
-                    ['description' => fake()->sentence(4)]   // provide description if new
+                    ['description' => $faker->sentence(4)]   // provide description if new
                 );
             });
 
