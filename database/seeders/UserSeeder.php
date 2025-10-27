@@ -12,6 +12,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        // user presets used by Postman docs
         $seedUsers = [
             [
                 'id' => 99,

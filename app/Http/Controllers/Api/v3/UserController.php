@@ -139,6 +139,7 @@ class UserController extends Controller
         return ApiResponse::success(['Users' => $users, 'resultsCount' => $users->count()], "Users retrieved");
     }
 
+    // suspends a user using their $id
     public function suspendUser(string $id)
     {
         $user = User::find($id);
@@ -146,6 +147,7 @@ class UserController extends Controller
         return ApiResponse::success([$user->status], "suspended user <{$user->id}> successfully");
     }
 
+    // un-suspends a user using their $id
     public function unsuspendUser(string $id)
     {
         $user = User::find($id);
@@ -153,6 +155,7 @@ class UserController extends Controller
         return ApiResponse::success([], "unsuspended user <{$user->id}> successfully");
     }
 
+    // Removes ALL the jokes a user has made
     public function removeJokes(string $id)
     {
         $user = User::find($id);
@@ -172,6 +175,7 @@ class UserController extends Controller
         return ApiResponse::success([], "jokes from user <$id> removed");
     }
 
+    // logs out the user with the id of $id
     public function logoutUser(string $id)
     {
         $user = User::find($id);
@@ -182,6 +186,7 @@ class UserController extends Controller
         return ApiResponse::success([], "User logged out successfully");
     }
 
+    // assigns a role to a user with an id of $id
     public function assignRole(request $request, string $id)
     {
         $validated = $request->validate([
@@ -192,6 +197,7 @@ class UserController extends Controller
 
     }
 
+    // Removes ALL the votes a user has made
     public function removeVotes(string $id)
     {
         $user = User::find($id);

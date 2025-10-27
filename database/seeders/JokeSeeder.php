@@ -14,7 +14,7 @@ class JokeSeeder extends Seeder
 {
     public function run(): void
     {
-	$faker = Faker::create();
+	$faker = Faker::create(); // define $faker for later. Fake causes issues in prod
 
         if (User::count() === 0) {
             User::factory()->count(5)->create();
@@ -100,41 +100,6 @@ class JokeSeeder extends Seeder
             ],
         ];
 
-//        $seedJokes = [
-//            [
-//                'title' => 'Skeleton Fight',
-//                'content' => "Why don't skeletons fight each other? ".
-//                    "Because they don't have the guts.",
-//                'user_id' => 100,
-//                'categories' => ['Skeleton'],
-//            ],
-//            [
-//                'title' => 'Pirate Maths',
-//                'content' => 'What type of Maths are pirates best at?'.
-//                    'Algebra. Because they are good at finding X.',
-//                'user_id' => 100,
-//                'categories' => ['Pirate', 'Maths'],
-//            ],
-//            [
-//                'title' => 'Why do Java developers wear glasses?',
-//                'content' => 'Because they can\'t C#.',
-//                'user_id' => 200,
-//                'categories' => ['Programming'],
-//            ],
-//            [
-//                'title' => 'Why did the programmer quit his job?',
-//                'content' => 'Because he didn\'t get arrays.',
-//                'user_id' => 300,
-//                'categories' => ['Programming'],
-//            ],
-//            [
-//                'title' => 'A SQL query walks into a bar...',
-//                'content' => 'He walks up to two tables and asks, \'Can I join you?\'',
-//                'user_id' => 301,
-//                'categories' => ['Programming'],
-//            ],
-//        ];
-
         foreach ($seedJokes as $jokeData) {
             $joke = Joke::create([
                 'title' => $jokeData['title'],
@@ -145,7 +110,7 @@ class JokeSeeder extends Seeder
             $categoryIds = collect($jokeData['category'])->map(function ($name) use ($faker) {
                 return Category::firstOrCreate(
                     ['title' => $name],
-                    ['description' => $faker->sentence(4)]   // provide description if new
+                    ['description' => $faker->sentence(4)]   // provide description ONLY if new
                 );
             });
 

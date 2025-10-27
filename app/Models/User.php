@@ -61,18 +61,21 @@ class User extends Authenticatable
         return $this->hasMany(JokeReaction::class);
     }
 
+    // suspend a user in DB
     public function unsuspendUser()
     {
         $this->status = null;
         $this->save();
     }
 
+    // unsuspend a user in DB
     public function suspendUser()
     {
         $this->status = 'suspended';
         $this->save();
     }
 
+    // returns a user's attached role(s)
     public function role()
     {
         return $this->roles;

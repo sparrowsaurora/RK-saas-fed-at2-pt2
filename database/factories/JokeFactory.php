@@ -29,34 +29,13 @@ class JokeFactory extends Factory
         ];
     }
 
+    /*
+     * creates a joke w/ a category attached
+     */
     public function withCategory()
     {
         return $this->afterCreating(function (Joke $joke) {
-//            // Attach 1-3 random categories
-//            $categories = Category::factory()->count(rand(1, 3))->create();
-//            $joke->categories()->attach($categories->pluck('id'));
             $joke->categories()->attach(Category::factory()->create());
         });
     }
-
-
-//[
-//'title' => "Skeleton Fight",
-//'body' => "Why don't skeletons fight each other? They don't have the guts.",
-//'category' => ['Pirate'],
-//],
-//
-//foreach ($seedJokes as $jokeData) {
-//$joke = Joke::create([
-//'title' => $jokeData['title'],
-//'content' => $jokeData['body'],
-//'user_id' => $users->random()->id,
-//]);
-//
-//$categoryIds = collect($jokeData['category'])->map(function ($name) {
-//    return Category::firstOrCreate(['name' => $name])->id;
-//});
-//
-//$joke->categories()->attach($categoryIds);
-//}
 }

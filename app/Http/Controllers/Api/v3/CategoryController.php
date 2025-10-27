@@ -87,9 +87,6 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-//        $category = Category::whereId($id)->withCount('jokes')->get();
-////        $category = Category::whereId($id)->get();
-//        $jokes = $category->jokesByDateAddedDesc()->get();
         $category = Category::with(['jokes' => function ($query) {
             $query->orderByDesc('created_at');
         }])->find($id);
@@ -100,10 +97,6 @@ class CategoryController extends Controller
 
         return ApiResponse::success(
             $category
-//            [
-//                'category' => $category,
-//                'jokesInCategory' => $jokes
-//            ]
             , "Category retrieved"
         );
     }

@@ -36,7 +36,6 @@ class JokeController extends Controller
             'title' => ['required', 'string', 'min:4'],
             'content' => ['required', 'string', 'min:6'],
             'category_id' => ['required', 'integer', 'exists:categories,id'],
-//            'published_at' => ['nullable', 'date'],
         ]);
 
         // Automatically get the user from the Bearer token
@@ -46,7 +45,6 @@ class JokeController extends Controller
         $joke = Joke::create([
             'title' => $validated['title'],
             'content' => $validated['content'],
-//            'published_at' => $validated['published_at'] ?? null,
             'user_id' => $user->id,
         ]);
 
@@ -85,7 +83,6 @@ class JokeController extends Controller
         $validated = $request->validate([
             'title' => ['sometimes', 'string', 'min:4'],
             'content' => ['sometimes', 'string', 'min:6'],
-//            'published_at' => ['nullable', 'date'],
         ]);
 
         $joke = Joke::find($id);
@@ -114,17 +111,14 @@ class JokeController extends Controller
      */
     public function destroy(Request $request, string $id): JsonResponse
     {
-        // check user owns joke or is staff/admin
-
         $joke = Joke::find($id);
 
         if (!$joke) {
             return ApiResponse::error([], "Joke not found", 404);
         }
 
-        // check user owns joke
+        // check user owns joke or is !Client
         $user = $request->user();
-//        if ($joke->user_id !== $user->id || !$user->hasAnyRole(['super-user', 'admin'])) {
         if ($joke->user_id !== $user->id || !$user->hasAnyRole(['Super-User','Administrator','Staff'])) {
             return ApiResponse::error([], "You do not have permission to delete this joke", 403);
         }
@@ -209,11 +203,10 @@ class JokeController extends Controller
         return ApiResponse::success([], "Joke permanently deleted");
     }
 
-    public function random(Request $request)
+    // return a random joke
+    public function random()
     {
         $joke = Joke::inRandomOrder()->first();
-
-        $user = $request->user();
         return ApiResponse::success($joke, "Random joke retrieved");
     }
 

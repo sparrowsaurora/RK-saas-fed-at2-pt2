@@ -10,6 +10,13 @@ use Illuminate\Http\Request;
 
 class JokeReactionController extends Controller
 {
+    /*
+     * stores a Reaction to a joke
+     *
+     * @param Request $request
+     * @param string $id
+     * @return JsonResponse
+     */
     public function store(Request $request, string $id)
     {
         $validated = $request->validate([
@@ -26,7 +33,7 @@ class JokeReactionController extends Controller
             ->first();
 
         if (!$existing) {
-            // New reaction
+            // New reaction line
             JokeReaction::create([
                 'user_id' => $userId,
                 'joke_id' => $id,
@@ -44,7 +51,7 @@ class JokeReactionController extends Controller
         }
 
         if ($existing->is_positive === $isPositive) {
-            // Same reaction → remove it (toggle off)
+            // Same reaction line -> remove it (toggle off)
             $existing->delete();
 
             // Decrease the corresponding counter
@@ -57,7 +64,7 @@ class JokeReactionController extends Controller
             return ApiResponse::success($joke->fresh(), 'Reaction removed');
         }
 
-        // Different reaction → switch from + to -, or vice versa
+        // Different reaction line -> switch from + to -, or vice versa
         if ($isPositive) {
             $joke->increment('positive_count');
             $joke->decrement('negative_count');

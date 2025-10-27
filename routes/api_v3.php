@@ -13,27 +13,16 @@ use Illuminate\Support\Facades\Route;
  * API Version 3 Routes
  */
 
-/**
- * User API Routes
- * - Register, Login (no authentication)
- * - Profile, Logout, User details (authentication required)
- */
-
-//routing stuff holder
-//// $roles = ['super-user', 'admin', 'staff', 'client'];
-// Route::middleware('role:admin|staff|client')->group(function () {});
-// Route::middleware('role:super-user|admin|staff')->group(function () {});
-// ->middleware(['auth:sanctum',]);
-// ->middleware(['auth:sanctum', 'role:super-user|admin|staff']);
-// ->middleware('role:super-user|admin|staff');
-
-// index route:
+// index route
 Route::get('welcome', function() {
 	return ApiResponse::success([], "welcome");
 });
 
-
-/* Auth Controller Routes ------------------------------------------------------ */
+/**
+ * User Auth Controller Routes ------------------------------
+ * - Register, Login (no authentication)
+ * - Profile, Logout, User details (authentication required)
+ */
 Route::prefix('auth')
     ->group(function () {
         Route::post('register', [AuthControllerV3::class, 'register']);
@@ -47,7 +36,23 @@ Route::prefix('auth')
         });
     });
 
-/* Admin - User Controller Routes ---------------------------------------------------- */
+/**
+ * admin Controller Routes ------------------------------
+ * @requires auth
+ * @requires role: in [ Super-User | Administrator | Staff ]
+ * - dashboard
+ * - Users/
+ *      - browse, read, edit, delete
+ *      - removeJokes
+ *      - suspend, unsuspend
+ *      - search
+ *      - logoutUser
+ *      - assignRole
+ *      - removeVotes -> @requires role: in [ Super-User | Administrator ]
+ * - Roles/ -> @requires role: in [ Super-User | Administrator ]
+ *      - browse, read, edit, add, delete
+ *      - logoutRole (all users of a role)
+ */
 Route::middleware(['auth:sanctum', 'role:Super-User|Administrator|Staff'])->group(function () {
     Route::prefix('admin')
         ->group(function () {
@@ -86,10 +91,21 @@ Route::middleware(['auth:sanctum', 'role:Super-User|Administrator|Staff'])->grou
 });
 
 
-/* Categories Controller Routes ------------------------------------------------------ */
+/**
+ * Category Controller Routes ------------------------------
+ * @requires auth
+ * @requires role: in [ Super-User | Administrator | Staff ]
+ * - search
+ * - browse, read
+ * -> @requires role: in [ Super-User | Administrator ]
+ *      - edit, add, delete
+ *      - removeJokes
+ *      - suspend, unsuspend
+ * - Trash/
+ *      - removeOne, removeAll
+ *      - recoverOne, recoverAll
+ */
 Route::middleware(['auth:sanctum', 'role:Super-User|Administrator|Staff'])->group(function () {
-//Route::middleware(['auth:sanctum', 'role:super-user|admin|staff'])->group(function () {
-//    Route::resource("categories", CategoryControllerV3::class);
     Route::prefix('categories')
         ->group(function () {
             Route::post('search', [CategoryControllerV3::class, 'search']);
@@ -113,7 +129,17 @@ Route::middleware(['auth:sanctum', 'role:Super-User|Administrator|Staff'])->grou
         });
 });
 
-/* Jokes Controller Routes ----------------------------------------------------- */
+/**
+ * Jokes Controller Routes ------------------------------
+ * @requires auth
+ * - react
+ * - browseByCategory
+ * - browse, read, edit, add, delete
+ * - Trash/ -> @requires role: in [ Super-User | Administrator | Staff]
+ *      - browse
+ *      - removeOne, removeAll
+ *      - recoverOne, recoverAll
+ */
 Route::get('jokes/random', [JokeControllerV3::class, 'random']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -147,8 +173,21 @@ Route::middleware(['auth:sanctum'])->group(function () {
         });
 });
 
+
+/**
+ * Permission Testing Routes ------------------------------
+ * - Test/
+ *      - base
+ *      - superUser -> @requires role: Super-User
+ *      - admin -> @requires role: Administrator
+ *      - staff -> @requires role: Staff
+ *      - client -> @requires role: Client
+ *      - unAuth -> @denies role: any
+ */
+/* Permission Testing Routes ------------------------------------------------- */
+
 // For testing API base returns :200
-route::get('/', function () {
+route::get('test/base', function () {
     return ApiResponse::success([], "success");
 });
 // For testing superUser only route :200

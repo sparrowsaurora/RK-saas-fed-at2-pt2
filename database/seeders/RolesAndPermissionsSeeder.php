@@ -57,33 +57,6 @@ class RolesAndPermissionsSeeder extends Seeder
         $client = Role::firstOrCreate(['name' => 'Client']);
 
         // Assign permissions to roles
-//        $superUser->syncPermissions(Permission::all());
-//        $admin->syncPermissions(Permission::all());
-//
-//        $staff->syncPermissions([
-//            'user.browse',
-//            'user.show',
-//            'user.edit',
-//            'user.add',
-//            'user.delete',
-//            'joke.browse',
-//            'joke.show',
-//            'joke.edit',
-//            'joke.delete',
-//            'joke.trash.recover.one',
-//            'joke.trash.remove.one',
-//        ]);
-//
-//        $client->syncPermissions([
-//            'joke.browse',
-//            'joke.show',
-//            'joke.edit',
-//            'joke.add',
-//            'joke.delete',
-//            'joke.trash.recover.one',
-//            'joke.trash.remove.one',
-//            'joke.trash.empty.all',
-//            'joke.trash.restore.all',
-//        ]);
+        // permissions are defined via routes and aren't strictly assigned to users
     }
 }

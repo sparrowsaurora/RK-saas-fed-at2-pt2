@@ -8,13 +8,10 @@
 //use App\Http\Controllers\JokeReactionController;
 //use Illuminate\Support\Facades\Route;
 //
-
+use App\Responses\ApiResponse;
 
 Route::get('/', function () {
-    return response()->json([
-        'status' => 'OK',
-        'message' => 'Laravel is running successfully on cPanel!',
-    ]);
+    return ApiResponse::success([], "welcome");
 });
 
 //Route::get('/', [StaticPages::class, 'welcome'])->name('home');

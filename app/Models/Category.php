@@ -35,6 +35,9 @@ class Category extends Model
         return $this->jokes()->orderBy('title', 'desc');
     }
 
+    /**
+     * Returns the collection of related jokes Unsorted
+     */
     public function jokesByTitle(): BelongsToMany
     {
         return $this->jokes()->orderBy('title');
@@ -49,6 +52,9 @@ class Category extends Model
         return $this->jokes()->orderBy('created_at', 'desc');
     }
 
+    /*
+     * returns jokes in category sorted by desc
+     */
     public function jokesInCategory()
     {
         return $this->jokes()->orderBy('created_at', 'desc');

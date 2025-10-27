@@ -64,6 +64,7 @@ class RoleController extends Controller
         return ApiResponse::success($role, 'Role deleted successfully');
     }
 
+    // logs out user with provided $id
     public function logoutRole(Request $request, string $id)
     {
         if ($id == '1') {
