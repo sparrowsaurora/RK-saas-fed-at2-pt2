@@ -3,6 +3,7 @@ deployment:
   tasks:
     - export HOME=/home/kelleyryscreencr
     - /usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction --working-dir=$PWD
+    - if [ ! -f database/database.sqlite ]; then touch database/database.sqlite; fi
     - php artisan migrate --force
     - php artisan config:cache
     - php artisan route:cache
